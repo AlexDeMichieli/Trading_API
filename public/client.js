@@ -1,6 +1,10 @@
-// const socketio = require('socket.io')
 
+// socket.on('Account', (account)=>{
 
-// socket.on('connect', () => {
-//     console.log(socket.connected); // true
-//   });
+// let test = document.getElementById('test')
+// test.innerHTML = ''
+// for (let obj in account)
+// test.innerHTML += `<ul class = 'namespace'> ${obj} : ${account[obj]}  </ul>`
+
+// })
+
