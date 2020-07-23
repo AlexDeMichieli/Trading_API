@@ -3,7 +3,7 @@
 //should emit to the server and the server should emit back to the client ?
 socket.on('userconnected', (event)=>{
 
-  const ws = new WebSocket(`wss://ws.finnhub.io?token=bsc3vsfrh5rau11sbktg`);
+  const ws = new WebSocket(`wss://ws.finnhub.io?token=`);
 
 // // Connection opened -> Subscribe
 ws.onopen = (event) => {
