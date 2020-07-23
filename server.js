@@ -15,28 +15,29 @@ let array = []
 
 io.on('connection', (socket, req) => {
 
-  console.log('a user connected', socket.id);
+  socket.emit('userconnected', socket.id);
+  
+//   const ws = new WebSocket(`wss://ws.finnhub.io?token=bsc3vsfrh5rau11sbktg`);
 
-  const ws = new WebSocket(`wss://ws.finnhub.io?token=`);
+// // Connection opened -> Subscribe
+// ws.onopen = (event) => {
+//   ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'TSLA'}))
+//   // ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
+//   // ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'IC MARKETS:1'}))
+// };
 
-// Connection opened -> Subscribe
-ws.onopen = (event) => {
-  ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'TSLA'}))
-  // ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
-  // ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'IC MARKETS:1'}))
-};
-
-// Listen for messages
-ws.onmessage = (event) => {
-    array.push(event.data)
-    console.log(event.data)
-    socket.emit('message',array);
-};
+// // Listen for messages
+// ws.onmessage = (event) => {
+//     array.push(event.data)
+//     console.log(event.data)
+//     socket.emit('message',array);
+// };
 
 
-// Unsubscribe
- let unsubscribe = function(symbol) {
-  ws.send(JSON.stringify({'type':'unsubscribe','symbol': symbol}))
-}
+// // Unsubscribe
+//  let unsubscribe = function(symbol) {
+//   ws.send(JSON.stringify({'type':'unsubscribe','symbol': symbol}))
+// }
 
 });
+
