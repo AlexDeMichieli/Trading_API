@@ -11,25 +11,28 @@ const expressServer = app.listen(PORT, '0.0.0.0', () => {
 const io = socketio(expressServer)
 
 app.use(express.static(__dirname + '/public'));
+let array = []
 
 io.on('connection', (socket, req) => {
 
   console.log('a user connected', socket.id);
 
-  const ws = new WebSocket(`wss://ws.finnhub.io?token=${process.env.SECRET_TOKEN}`);
+  const ws = new WebSocket(`wss://ws.finnhub.io?token=`);
 
 // Connection opened -> Subscribe
-ws.addEventListener('open', function (event) {
-  ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'AAPL'}))
-  ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
-  ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'IC MARKETS:1'}))
-});
+ws.onopen = (event) => {
+  ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'TSLA'}))
+  // ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
+  // ws.send(JSON.stringify({'type':'subscribe', 'symbol': 'IC MARKETS:1'}))
+};
 
 // Listen for messages
-ws.addEventListener('message', function (event) {
-  socket.emit('Message from server ', event.data);
-  console.log(event.data)
-});
+ws.onmessage = (event) => {
+    array.push(event.data)
+    console.log(event.data)
+    socket.emit('message',array);
+};
+
 
 // Unsubscribe
  let unsubscribe = function(symbol) {
@@ -37,8 +40,3 @@ ws.addEventListener('message', function (event) {
 }
 
 });
-
-
-
-
-

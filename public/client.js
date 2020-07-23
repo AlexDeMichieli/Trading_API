@@ -1,5 +1,7 @@
 
-socket.on('message', (test)=>{
+socket.on('message', (event)=>{
 
-console.log(test)
+  let target = document.getElementById('test')
+  target.innerHTML = event
+console.log(event)
 })
