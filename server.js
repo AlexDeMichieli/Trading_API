@@ -1,21 +1,27 @@
-const express = require('express');
-const http = require('http');
-const WebSocket = require('ws');
+const { createServer } = require("http");
+const express = require("express");
+const WebSocket = require("ws");
 
-const port = 5000;
-const server = http.createServer(express);
-const wss = new WebSocket.Server({ server })
+const app = express();
+app.use(express.json({ extended: false }));
+app.use(express.static(__dirname + '/public'));
 
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(data) {
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
+const port = process.env.PORT || 5000;
+const server = createServer(app);
+server.listen(port, () => console.info(`Server running on port: ${port}`));
+
+const webSocketServer = new WebSocket.Server({ server });
+webSocketServer.on("connection", (ws) => {
+
+    console.info("Total connected clients:", webSocketServer.clients.size);
+
+    app.locals.clients = webSocketServer.clients;
+    ws.on('message', function incoming(data) {
+      webSocketServer.clients.forEach(function each(client) {
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          client.send(data);
+        }
+      })
     })
-  })
-})
+});
 
-server.listen(port, function() {
-  console.log(`Server is listening on ${port}!`)
-})
