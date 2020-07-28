@@ -11,7 +11,7 @@ const App = () => {
     const socket = socketIOClient(ENDPOINT);
     socket.on('userconnected', (event) =>{
   
-      const socket = new WebSocket('wss://ws.finnhub.io?token=bsdsgknrh5rea8ra8k9g');
+      const socket = new WebSocket('wss://ws.finnhub.io?token=');
   
       socket.addEventListener('open', function (event) {
           // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
@@ -26,9 +26,8 @@ const App = () => {
       // Connection opened -> Subscribe
       // Listen for messages
       socket.addEventListener('message', function (event) {
-
-          console.log(event.data);
-      //     let obj = JSON.parse(event.data) 
+          let obj = JSON.parse(event.data) 
+          setResponse(obj.data)
 
       //     function deepIterator (target) {
       //       if (typeof target === 'object') {
@@ -36,9 +35,11 @@ const App = () => {
       //           deepIterator(target[key]);
       //         }
       //       } else {
-      //         // console.log(target)
-      //         // array.push(target)
       //         array.push(target);
+      //         console.log(array)
+
+      //         setResponse(array)
+
       //       }
       //     }
 
@@ -52,26 +53,49 @@ const App = () => {
   
       unsubscribe.addEventListener("click", function(symbol){
         console.log('unsubscribed ')
-        socket.send(JSON.stringify({'type':'unsubscribe','symbol': 'AAPL'}))
+        socket.send(JSON.stringify({'type':'unsubscribe','symbol': 'BINANCE:BTCUSDT'}))
       })
 
       subscribe.addEventListener("click", function(symbol){
         console.log('subscribed ')
-        socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'AAPL'}))
+        socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
        })
   })
   return () => socket.disconnect();
 
   }, []);
 
+ 
+  // let obj = {"data":[{"p":10929.47,"s":"BINANCE:BTCUSDT","t":1595916553550,"v":0.0015}],"type":"trade"}
+
+  const values = () =>{
+
+    for (let key in response){
+      let timestamp = response[key].t
+      let dateObj = new Date(timestamp * 1000); 
+      let utcString = dateObj.toUTCString(); 
+      let time = utcString.slice(-11, -4); 
+      return(
+        <div>
+        <p>price {response[key].p}</p>
+        <p>symbol {response[key].s}</p>
+        <p>time {time}</p>
+
+        </div>
+        )
+
+  } 
+
+}
+
   return (
 
     <div>
       <button id = "subscribe" type="button">Subscribe</button>
       <button id = "unsubscribe" type="button"> Unsubscribe</button>
-    <p>
-    {/* {console.log(array)} */}
-    </p>
+    <div>
+    {values()}
+    </div>
     </div>
   );
 }
