@@ -11,7 +11,7 @@ const App = () => {
     const socket = socketIOClient(ENDPOINT);
     socket.on('userconnected', (event) =>{
   
-      const socket = new WebSocket('wss://ws.finnhub.io?token=');
+      const socket = new WebSocket('wss://ws.finnhub.io?token=bsdsgknrh5rea8ra8k9g');
   
       socket.addEventListener('open', function (event) {
           // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
@@ -52,12 +52,12 @@ const App = () => {
   
       unsubscribe.addEventListener("click", function(symbol){
         console.log('unsubscribed ')
-        socket.send(JSON.stringify({'type':'unsubscribe','symbol': 'TSLA'}))
+        socket.send(JSON.stringify({'type':'unsubscribe','symbol': 'AAPL'}))
       })
 
       subscribe.addEventListener("click", function(symbol){
         console.log('subscribed ')
-        socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'TSLA'}))
+        socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'AAPL'}))
        })
   })
   return () => socket.disconnect();
