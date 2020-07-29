@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
+import Chart from './components/chart'
+
+
+
 const ENDPOINT = "localhost:5000";
 
 const App = () => {
@@ -71,17 +75,20 @@ const App = () => {
   const values = () =>{
 
     for (let key in response){
-      let timestamp = response[key].t
-      let dateObj = new Date(timestamp * 1000); 
-      let utcString = dateObj.toUTCString(); 
-      let time = utcString.slice(-11, -4); 
+      let timeStamp = new Date(response[key].t).toLocaleTimeString("en-US")
       return(
-        <div>
+        
+        <Chart price = {2} time = {3}/>
+
+        
+        /* <div>
         <p>price {response[key].p}</p>
         <p>symbol {response[key].s}</p>
-        <p>time {time}</p>
+        <p>time {timeStamp}</p>
 
-        </div>
+        </div> */
+      
+
         )
 
   } 
@@ -96,6 +103,7 @@ const App = () => {
     <div>
     {values()}
     </div>
+    <Chart/>
     </div>
   );
 }
