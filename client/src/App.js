@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 import Chart from './components/chart'
+import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 
 
@@ -15,7 +16,7 @@ const App = () => {
     const socket = socketIOClient(ENDPOINT);
     socket.on('userconnected', (event) =>{
   
-      const socket = new WebSocket('wss://ws.finnhub.io?token=');
+      const socket = new WebSocket('wss://ws.finnhub.io?token=bsdsgknrh5rea8ra8k9g');
   
       socket.addEventListener('open', function (event) {
           // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
@@ -30,25 +31,28 @@ const App = () => {
       // Connection opened -> Subscribe
       // Listen for messages
       socket.addEventListener('message', function (event) {
-          let obj = JSON.parse(event.data) 
-          setResponse(obj.data)
 
-      //     function deepIterator (target) {
-      //       if (typeof target === 'object') {
-      //         for (const key in target) {
-      //           deepIterator(target[key]);
-      //         }
-      //       } else {
-      //         array.push(target);
-      //         console.log(array)
+          let stream = JSON.parse(event.data)
 
-      //         setResponse(array)
+          //extracting information from websocket response
+          for (let key in stream.data){
+                for (let values in stream.data[key]){
+          //prepating array with object for chart
+               let timeStamp = new Date(stream.data[key].t).toLocaleTimeString("en-US")
 
-      //       }
-      //     }
+                let chartData = {
+                        price: stream.data[key].p,
+                        // price: Math.floor(Math.random() * 100),
 
-      //     deepIterator(obj)
+                        trade: timeStamp
+                      }
+                        array.push(chartData)
+                        setResponse(currentData => [...array])
+                        // setResponse([...array])
 
+                }
+
+          }
       });
 
         
@@ -72,28 +76,27 @@ const App = () => {
  
   // let obj = {"data":[{"p":10929.47,"s":"BINANCE:BTCUSDT","t":1595916553550,"v":0.0015}],"type":"trade"}
 
-  const values = () =>{
+//   const values = () =>{
 
-    for (let key in response){
-      let timeStamp = new Date(response[key].t).toLocaleTimeString("en-US")
-      return(
+//     for (let key in response){
+
+//       return(
         
-        <Chart price = {2} time = {3}/>
+//         <Chart data={response}/>
 
         
-        /* <div>
-        <p>price {response[key].p}</p>
-        <p>symbol {response[key].s}</p>
-        <p>time {timeStamp}</p>
-
-        </div> */
+//         //  <div>
+//         // <p>price {response[key].p}</p>
+//         // <p>symbol {response[key].s}</p>
+//         // <p>time {timeStamp}</p>
+//         // </div>
       
 
-        )
+//         )
 
-  } 
+//   } 
 
-}
+// }
 
   return (
 
@@ -101,9 +104,16 @@ const App = () => {
       <button id = "subscribe" type="button">Subscribe</button>
       <button id = "unsubscribe" type="button"> Unsubscribe</button>
     <div>
-    {values()}
+    {/* {values()} */}
+    {console.log(typeof response, response)}
     </div>
-    <Chart/>
+    <LineChart width={500} height={300} data={response}>
+        <XAxis dataKey="trade"/>
+        <YAxis/>
+        <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+        <Line type="monotone" dataKey="price" stroke="#8884d8" />
+    </LineChart>
+    {/* <Chart/> */}
     </div>
   );
 }

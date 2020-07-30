@@ -1,36 +1,20 @@
-import React from 'react'
-import {XYPlot, LineSeries,  HorizontalGridLines,
-    VerticalGridLines,
-    XAxis,
-    YAxis,
-    LineMarkSeries} from 'react-vis';
-import '../../node_modules/react-vis/dist/style.css'
+import React from "react";
+
+import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 
-export default function chart() {
 
-    const data = [
-        {x: 0, y: 8},
-        {x: 1, y: 5},
-        {x: 2, y: 4},
-        {x: 3, y: 9},
-        // {x: 4, y: 1},
-        // {x: 5, y: 7},
-        // {x: 6, y: 6},
-        // {x: 7, y: 3},
-        // {x: 8, y: 2},
-        // {x: 9, y: 0},
-        // {x: 10, y: 4}
-
-    ]
+export default function chart(props) {
+  console.log(props.data)
+  let data = [{price: 11220, trade: "BINANCE:BTCUSDT"}, {price: 11179.19, trade: "BINANCE:BTCUSDT"},{price: 11179.21, trade: "BINANCE:BTCUSDT"} ]
     return (
-        <div className="App">
-            <XYPlot height={300} width={300}>
-            <LineSeries data={data} />
-            <XAxis/><YAxis/>
-    <HorizontalGridLines />
-    <VerticalGridLines />
-            </XYPlot>
-        </div>
+
+      // <div></div>
+        <LineChart width={500} height={300} data={props.data}>
+        <XAxis dataKey="trade"/>
+        <YAxis/>
+        <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+        <Line type="monotone" dataKey="price" stroke="#8884d8" />
+      </LineChart>
     )
 }
