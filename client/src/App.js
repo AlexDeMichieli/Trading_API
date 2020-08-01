@@ -9,24 +9,16 @@ const ENDPOINT = "localhost:5000";
 
 const App = () => {
   const [response, setResponse] = useState([]);
+  const [symbol, setSymbol] = useState(["BINANCE:ETHBTC", "BINANCE:BTCUSDT"]);
+  
   let array = []
 
   useEffect(() => {
 
     const socket = socketIOClient(ENDPOINT);
     socket.on('userconnected', (event) =>{
-  
-      const socket = new WebSocket('wss://ws.finnhub.io?token=bsdsgknrh5rea8ra8k9g');
-  
-      socket.addEventListener('open', function (event) {
-          // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
-          // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
-          // subscribe.addEventListener("click", function(){
-          // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'AAPL'}))
-          // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
-          // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'IC MARKETS:1'}))
-    
-       }); 
+      
+      const socket = new WebSocket('wss://ws.finnhub.io?token=bsieu5vrh5rd8hs1cbtg');
   
       // Connection opened -> Subscribe
       // Listen for messages
@@ -47,8 +39,8 @@ const App = () => {
                         trade: timeStamp
                       }
                         array.push(chartData)
-                        setResponse(currentData => [...array])
-                        // setResponse([...array])
+                        // setResponse(currentData => [...array])
+                        setResponse([...array])
 
                 }
 
@@ -58,46 +50,43 @@ const App = () => {
         
      let subscribe = document.getElementById('subscribe')
      let unsubscribe = document.getElementById('unsubscribe')
-  
-      unsubscribe.addEventListener("click", function(symbol){
-        console.log('unsubscribed ')
-        socket.send(JSON.stringify({'type':'unsubscribe','symbol': 'BINANCE:BTCUSDT'}))
+      
+     //ETHBTC
+      unsubscribe.addEventListener("click", function(){
+        console.log('unsubscribed')
+        symbol.map(item=>{
+          socket.send(JSON.stringify({'type':'unsubscribe','symbol': item}))
+
+        })
+
+
       })
 
-      subscribe.addEventListener("click", function(symbol){
+      subscribe.addEventListener("click", function(){
         console.log('subscribed ')
-        socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
+          symbol.map(item=>{
+            socket.send(JSON.stringify({'type':'subscribe','symbol': item}))
+
+          })
+
        })
   })
   return () => socket.disconnect();
 
   }, []);
 
+  
+  let test = symbol.map(item=>{
+    return (  
+    <LineChart width={500} height={300} data={response}>
+      <XAxis dataKey="trade"/>
+      <YAxis/>
+      <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+      <Line type="monotone" dataKey="price" stroke="#8884d8" />
+  </LineChart>
+  )
+  })
  
-  // let obj = {"data":[{"p":10929.47,"s":"BINANCE:BTCUSDT","t":1595916553550,"v":0.0015}],"type":"trade"}
-
-//   const values = () =>{
-
-//     for (let key in response){
-
-//       return(
-        
-//         <Chart data={response}/>
-
-        
-//         //  <div>
-//         // <p>price {response[key].p}</p>
-//         // <p>symbol {response[key].s}</p>
-//         // <p>time {timeStamp}</p>
-//         // </div>
-      
-
-//         )
-
-//   } 
-
-// }
-
   return (
 
     <div>
@@ -107,12 +96,7 @@ const App = () => {
     {/* {values()} */}
     {console.log(typeof response, response)}
     </div>
-    <LineChart width={500} height={300} data={response}>
-        <XAxis dataKey="trade"/>
-        <YAxis/>
-        <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
-        <Line type="monotone" dataKey="price" stroke="#8884d8" />
-    </LineChart>
+   {test}
     {/* <Chart/> */}
     </div>
   );
