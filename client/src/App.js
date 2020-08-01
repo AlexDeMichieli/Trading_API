@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 import Chart from './components/chart'
-import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
+// import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
+import '../node_modules/react-vis/dist/style.css';
+import {HorizontalGridLines,
+  VerticalGridLines,
+  XAxis,
+  XYPlot,
+  YAxis,
+  LineMarkSeries} from 'react-vis';
 
 
 
@@ -16,7 +23,7 @@ const App = () => {
     const socket = socketIOClient(ENDPOINT);
     socket.on('userconnected', (event) =>{
   
-      const socket = new WebSocket('wss://ws.finnhub.io?token=bsdsgknrh5rea8ra8k9g');
+      const socket = new WebSocket('wss://ws.finnhub.io?token=bsieu5vrh5rd8hs1cbtg');
   
       socket.addEventListener('open', function (event) {
           // socket.send(JSON.stringify({'type':'subscribe', 'symbol': 'BINANCE:BTCUSDT'}))
@@ -41,10 +48,10 @@ const App = () => {
                let timeStamp = new Date(stream.data[key].t).toLocaleTimeString("en-US")
 
                 let chartData = {
-                        price: stream.data[key].p,
+                        x: stream.data[key].p,
                         // price: Math.floor(Math.random() * 100),
 
-                        trade: timeStamp
+                        y: timeStamp
                       }
                         array.push(chartData)
                         setResponse(currentData => [...array])
@@ -107,13 +114,18 @@ const App = () => {
     {/* {values()} */}
     {console.log(typeof response, response)}
     </div>
-    <LineChart width={500} height={300} data={response}>
+    {/* <LineChart width={500} height={300} data={response}>
         <XAxis dataKey="trade"/>
         <YAxis/>
         <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
         <Line type="monotone" dataKey="price" stroke="#8884d8" />
-    </LineChart>
+    </LineChart> */}
     {/* <Chart/> */}
+    {/* <XYPlot width={400} height={300}><XAxis/><YAxis/>
+    <HorizontalGridLines />
+    <VerticalGridLines />
+    <LineMarkSeries data={response} />
+    </XYPlot>; */}
     </div>
   );
 }
