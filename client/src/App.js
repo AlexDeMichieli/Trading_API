@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 import Chart from './components/chart'
+import { AreaChart } from "recharts";
 
 
 const ENDPOINT = "localhost:5000";
@@ -12,8 +13,11 @@ const App = () => {
   });
   
   let array = []
+  const prevSymbolRef = useRef();
 
   useEffect(() => {
+
+    prevSymbolRef.current = symbol.coin
 
     const socket = socketIOClient(ENDPOINT);
     socket.on('userconnected', (event) =>{
@@ -32,43 +36,56 @@ const App = () => {
           //prepating array with object for chart
                let timeStamp = new Date(stream.data[key].t).toLocaleTimeString("en-US")
           
-                let chartData = {
-                        price: stream.data[key].p,
-                        time: timeStamp, 
-                        // name: stream.data[key].s
-                      }
+                  let chartData = {
+                          price: stream.data[key].p,
+                          time: timeStamp, 
+                          name: stream.data[key].s
+                  }
 
-                        array.push(chartData)
-                        setResponse([...array])
-
+                            array.push(chartData) 
+                            setResponse([...array])
+                            
+                          
 
                 }
-
           }
       });
-
         
      let subscribe = document.getElementById('subscribe')
      let unsubscribe = document.getElementById('unsubscribe')
-      
-     //ETHBTC
-      unsubscribe.addEventListener("click", function(){
-        console.log('unsubscribed')
-        socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol.coin}))
-      })
+     prevSymbolRef.current = symbol.coin
 
-      subscribe.addEventListener("click", function(){
-        console.log(`subscribed to ${symbol.coin}`)
-        socket.send(JSON.stringify({'type':'subscribe','symbol': symbol.coin}))
-      })
+      socket.onopen = () =>{
+        let timer = setInterval(setResponse([...array]),5000)
+
+
+           //ETHBTC
+           unsubscribe.addEventListener("click", function(){
+            clearInterval(timer);
+            console.log(`unsubscribed to ${symbol.coin}`)
+            socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol.coin}))
+          })
+    
+          subscribe.addEventListener("click", function(){
+            socket.send(JSON.stringify({'type':'unsubscribed to','symbol': prevSymbol}))
+            setTimeout( socket.send(JSON.stringify({'type':'subscribe','symbol': symbol.coin})), 2000)
+            
+           
+          })
+
+      }
+
    })
-     return () => socket.disconnect();
 
   }, [symbol]);
+
+  const prevSymbol = prevSymbolRef.current;
+
 
   const onChange = e => {
     const { name, value } = e.target;
     setSymbol({[name]: value });
+    
   };
 
   const charts = () => {
@@ -92,9 +109,9 @@ const App = () => {
      <option value="BINANCE:ZRXETH">BINANCE:ZRXETH</option>
 
     </select>
+    <p>Now: {symbol.coin}, before: {prevSymbol}</p>
     {console.log(typeof response, response)}
     </div>
-   {/* {test} */}
    {console.log(symbol)}
     {charts()}
     </div>

@@ -8,7 +8,7 @@ export default function chart(props) {
   console.log(props.data)
 
     return (
-      <BarChart width={600} height={300} data={props.data}>
+      <BarChart width={800} height={400} data={props.data}>
       <XAxis dataKey="time" stroke="#8884d8" />
       <YAxis />
       <Tooltip wrapperStyle={{ width: 500, backgroundColor: '#ccc' }} />
