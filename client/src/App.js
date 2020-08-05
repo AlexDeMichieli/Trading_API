@@ -58,20 +58,20 @@ const App = () => {
           setResponse([...array])
         }
 
-        let timer = setInterval(setRes,5000)
+        // let timer = setInterval(setRes,5000)
 
 
            //ETHBTC
            unsubscribe.addEventListener("click", function(){
           
-            clearInterval(timer);
+            // clearInterval(timer);
             console.log(`unsubscribed to ${symbol.coin}`)
             socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol.coin}))
           })
     
           subscribe.addEventListener("click", function(){
             socket.send(JSON.stringify({'type':'unsubscribed to','symbol': prevSymbol}))
-            socket.send(JSON.stringify({'type':'subscribe','symbol': symbol.coin}))
+            setTimeout(function(){socket.send(JSON.stringify({'type':'subscribe','symbol': symbol.coin}))}, 2000);
             
            
           })
