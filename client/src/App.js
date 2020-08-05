@@ -27,6 +27,7 @@ const App = () => {
       // Connection opened -> Subscribe
       // Listen for messages
       socket.addEventListener('message', function (event) {
+          
           console.log(event.data)
           let stream = JSON.parse(event.data)
 
@@ -43,10 +44,6 @@ const App = () => {
                   }
 
                             array.push(chartData) 
-                            setResponse([...array])
-                            
-                          
-
                 }
           }
       });
@@ -56,11 +53,17 @@ const App = () => {
      prevSymbolRef.current = symbol.coin
 
       socket.onopen = () =>{
-        let timer = setInterval(setResponse([...array]),5000)
+        
+        const setRes = () => {
+          setResponse([...array])
+        }
+
+        let timer = setInterval(setRes,5000)
 
 
            //ETHBTC
            unsubscribe.addEventListener("click", function(){
+          
             clearInterval(timer);
             console.log(`unsubscribed to ${symbol.coin}`)
             socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol.coin}))
@@ -68,7 +71,7 @@ const App = () => {
     
           subscribe.addEventListener("click", function(){
             socket.send(JSON.stringify({'type':'unsubscribed to','symbol': prevSymbol}))
-            setTimeout( socket.send(JSON.stringify({'type':'subscribe','symbol': symbol.coin})), 2000)
+            socket.send(JSON.stringify({'type':'subscribe','symbol': symbol.coin}))
             
            
           })
