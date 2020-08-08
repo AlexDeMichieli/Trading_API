@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech&display=swap');
+*{
+    font-family: 'Share Tech', sans-serif;
+} 
+.title{
+    font-size: 5rem;
+}
+
+.form{
+    width: 180px;
+    height: 50px;
+}
