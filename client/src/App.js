@@ -44,7 +44,7 @@
   
       socket.on('userconnected', (event) =>{
         
-        const socket = new WebSocket('wss://ws.finnhub.io?token=bsjfs77rh5rcthrmat10');
+        const socket = new WebSocket('wss://ws.finnhub.io?token=bsrnaun48v6tucpgh73g');
     
         // Connection opened -> Subscribe
         // Listen for messages
@@ -59,9 +59,9 @@
                  let timeStamp = new Date(stream.data[key].t).toLocaleTimeString("en-US")
             
                     let chartData = {
-                            price: stream.data[key].p,
-                            time: timeStamp, 
-                            name: stream.data[key].s
+                            Price: stream.data[key].p,
+                            Time: timeStamp, 
+                            Name: stream.data[key].s
                     }
                             array.push(chartData) 
                               
@@ -136,6 +136,8 @@
             <option value="BINANCE:ETHBTC">BINANCE:ETHBTC</option>
             <option value="BINANCE:BTCUSDT">BINANCE:BTCUSDT</option>
             <option value="BINANCE:ZRXETH">BINANCE:ZRXETH</option>
+            <option value="BINANCE:MCOBTC">BINANCE:MCOBTC</option>
+
           </select>
         </Box>
         <Box display="flex" className={classes.box} flexDirection="row" justifyContent="center" bgcolor="background.paper">
@@ -152,7 +154,9 @@
      
       {console.log(typeof response, response)}
       </div>
-      {charts()}
+      <Box className ='chartBox'>
+        {charts()}
+      </Box>
       </Container>
     );
   }
