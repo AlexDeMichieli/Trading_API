@@ -1,8 +1,16 @@
-  import React, { useState, useRef, useEffect } from "react";
+  import React, { useState, useEffect } from "react";
   import socketIOClient from "socket.io-client";
   import Chart from './components/chart'
-  
-  
+  import Button from '@material-ui/core/Button';
+  import { makeStyles } from '@material-ui/core/styles';
+  import TimerOffIcon from '@material-ui/icons/TimerOff';
+  import SlowMotionVideoIcon from '@material-ui/icons/SlowMotionVideo';
+  import Paper from '@material-ui/core/Paper';
+  import { Container} from '@material-ui/core';
+  import Box from '@material-ui/core/Box';
+  import './style.css'
+
+
   const ENDPOINT = "localhost:5000";
   
   const App = () => {
@@ -15,6 +23,20 @@
     
     let array = []
     let timer = null
+
+    const useStyles = makeStyles((theme) => ({
+      button: {
+        margin: theme.spacing(1),
+        textAlign: "center",
+        // display: "block",
+        marginTop: '20px'
+      },
+      box: {
+        marginTop: "10px"
+      }
+    }));
+    const classes = useStyles();
+
   
     useEffect(() => {
     
@@ -22,29 +44,26 @@
   
       socket.on('userconnected', (event) =>{
         
-        const socket = new WebSocket('wss://ws.finnhub.io?token=bsjfs77rh5rcthrmat10');
+        const socket = new WebSocket('wss://ws.finnhub.io?token=bsrnaun48v6tucpgh73g');
     
         // Connection opened -> Subscribe
         // Listen for messages
         socket.addEventListener('message', function (event) {
            
-  
-            // console.log(event.data)
-            let stream = JSON.parse(event.data)
+              let stream = JSON.parse(event.data)
   
             //extracting information from websocket response
             for (let key in stream.data){
                   for (let values in stream.data[key]){
-            //prepating array with object for chart
+            //preparing array with object for chart
                  let timeStamp = new Date(stream.data[key].t).toLocaleTimeString("en-US")
             
                     let chartData = {
-                            price: stream.data[key].p,
-                            time: timeStamp, 
-                            name: stream.data[key].s
+                            Price: stream.data[key].p,
+                            Time: timeStamp, 
+                            Name: stream.data[key].s
                     }
-  
-                              array.push(chartData) 
+                            array.push(chartData) 
                               
                   }
             }
@@ -56,7 +75,6 @@
   
        
         socket.onopen = () =>{
-  
       
              unsubscribe.addEventListener("click", function(){
               clearInterval(timer);
@@ -68,8 +86,19 @@
             })
       
             subscribe.addEventListener("click", function(){
-           
-              timer = setInterval(function(){setResponse([...array])}, 5000)
+
+              //this reduces the array after a certain lenght so the graph doesn't get overcrowded
+
+              let timerLogic = () =>{
+                if(array.length > 60){
+                  let removed = array.splice(0,40)
+                  setResponse([...removed])
+                } else {
+                  setResponse([...array])
+                }
+              }
+              timer = setInterval(timerLogic, 5000)
+            
               setSubscribe(false)
               setUnsuscribe(true)
            
@@ -83,8 +112,6 @@
   
     }, [symbol]);
   
-  
-  
     const onChange = e => {
       const { name, value } = e.target;  
       setSymbol({[name]: value });
@@ -93,29 +120,44 @@
   
     const charts = () => {
       return (
-        <Chart data={response} x ={response.x} y = {response.y}/>
+        <Chart data={response}/>
       )
     }
   
     return (
   
+      <Container>
+        <Box display="flex" className={classes.box} flexDirection="column" alignItems="center" bgcolor="background.paper">
+          <h1 className ='title'>Choose a Currency </h1>
+          <label for="symbol"></label>
+          {/* https://api.binance.com/api/v3/ticker/price */}
+          <select className = 'form' disabled = {!subscribe} onChange={onChange} name="coin"  id="symbol">
+            <option value="IC MARKETS:1">IC MARKETS:1</option>
+            <option value="BINANCE:ETHBTC">BINANCE:ETHBTC</option>
+            <option value="BINANCE:BTCUSDT">BINANCE:BTCUSDT</option>
+            <option value="BINANCE:ZRXETH">BINANCE:ZRXETH</option>
+            <option value="BINANCE:MCOBTC">BINANCE:MCOBTC</option>
+
+          </select>
+        </Box>
+        <Box display="flex" className={classes.box} flexDirection="row" justifyContent="center" bgcolor="background.paper">
+          <Button id = "subscribe" disabled = {!subscribe} variant="contained" color="primary" className={classes.button} startIcon={<SlowMotionVideoIcon />} >
+          Subscribe
+        </Button>
+          <Button id = "unsubscribe" disabled = {!unsubscribe} variant="contained" color="secondary" className={classes.button} startIcon={<TimerOffIcon />} >
+          Unsubscribe
+        </Button>
+       </Box>
+
       <div>
-        <button id = "subscribe" disabled = {!subscribe}type="button">Subscribe</button>
-        <button id = "unsubscribe" disabled = {!unsubscribe} type="button"> Unsubscribe</button>
-      <div>
-      <label for="symbol">Choose a symbol:</label>
       {/* https://api.binance.com/api/v3/ticker/price */}
-      <select disabled = {!subscribe} onChange={onChange} name="coin"  id="symbol">
-      <option value="IC MARKETS:1">IC MARKETS:1</option>
-       <option value="BINANCE:ETHBTC">BINANCE:ETHBTC</option>
-       <option value="BINANCE:BTCUSDT">BINANCE:BTCUSDT</option>
-       <option value="BINANCE:ZRXETH">BINANCE:ZRXETH</option>
-  
-      </select>
+     
       {console.log(typeof response, response)}
       </div>
-      {charts()}
-      </div>
+      <Box className ='chartBox'>
+        {charts()}
+      </Box>
+      </Container>
     );
   }
   
