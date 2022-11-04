@@ -27,10 +27,9 @@ jobs:
           
       - name: Debug failure
         if: failure()
-        uses: actions/github-script@v6
-        with:
-           run: |
-             echo "eeg"
+      - uses: actions/checkout@v3
+      - run: |
+         echo "EAgreqrg"
        
           
   create_output_file:
