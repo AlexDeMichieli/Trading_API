@@ -27,7 +27,7 @@ jobs:
           
       - name: Debug failure
         if: failure()
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
       - run: |
          echo "EAgreqrg"
        
