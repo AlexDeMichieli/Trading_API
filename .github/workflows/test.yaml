@@ -18,7 +18,7 @@ jobs:
               --url https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts?per_page=100 \
               --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
               --header 'content-type: application/json'\
-              > ./input_file.json && if  cat input_file.json | grep "number" ; then echo includes results; else exit 1; fi 
+              > ./input_file.json 
       - name: Upload SARIF file
         uses: actions/upload-artifact@v3
         with:
