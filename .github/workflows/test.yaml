@@ -27,8 +27,11 @@ jobs:
           
       - name: Debug failure
         if: failure()
-        run: |
-             echo ./input_file.json && echo "does not include a valid list!"
+        uses: actions/github-script@v6
+        with:
+           run: |
+             echo "eeg"
+       
           
   create_output_file:
     runs-on: ubuntu-latest
