@@ -11,9 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: GET code scanning alerts
+        uses: actions/checkout@v3
       # this should be a script and should pull content based on pagination
       # should also guard against no content 
-        run: | 
+      - run: | 
               curl --request GET \
               --url https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts?per_page=100 \
               --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
@@ -21,7 +22,6 @@ jobs:
               > ./input_file.json
               
       - name: Validate file   
-        uses: actions/checkout@v3
       - run : |
             ls -a && cat input_file.json | grep "number" >/dev/null && echo "got data!" || exit 1; 
           
