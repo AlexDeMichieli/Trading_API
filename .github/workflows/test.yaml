@@ -30,7 +30,7 @@ jobs:
         if: failure()
       #  uses: actions/checkout@v3
         run: |
-         echo "No data to work with" && ls -a
+           cat input_file.json && echo "no valid data to work with!"
          
       - name: Upload SARIF file
         uses: actions/upload-artifact@v3
