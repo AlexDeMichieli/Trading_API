@@ -21,7 +21,8 @@ jobs:
               --header 'content-type: application/json'\
               > ./input_file.json
               
-      - name: Validate file   
+      - name: Validate file 
+#         uses: actions/checkout@v3
       - run : |
             ls -a && cat input_file.json | grep "number" >/dev/null && echo "got data!" || exit 1; 
           
