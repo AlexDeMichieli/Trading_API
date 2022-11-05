@@ -23,7 +23,7 @@ jobs:
       - name: Validate file   
         uses: actions/checkout@v3
       - run : |
-            cat input_file.json | grep "number" >/dev/null && echo "got data!" || exit 1; 
+            ls -a && cat input_file.json | grep "number" >/dev/null && echo "got data!" || exit 1; 
           
       - name: Debug failure
         if: failure()
