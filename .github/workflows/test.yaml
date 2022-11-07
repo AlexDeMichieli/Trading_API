@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@v3
       # this should be a script and should pull content based on pagination
       # should also guard against no content 
-      - run: gh api repos/dsp-testing/alex-testing/code-scanning/alerts
+      - run: repos/${{ github.repository }}/code-scanning/alerts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
